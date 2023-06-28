@@ -4,38 +4,38 @@ This is a personal site with apps I have made because I wanted to make them.
 
 ### Run with docker and nginx
 
-cd backend
+- cd backend
 
-python3 -m venv venv
+- python3 -m venv venv
 
-On Linux: source venv/bin/activate
-On Windows: venv\Scripts\activate
+- On Linux: source venv/bin/activate
+- On Windows: venv\Scripts\activate
 
-pip install -r requirements.txt
+- pip install -r requirements.txt
 
-deactivate
+- deactivate
 
-cd ..
+- cd ..
 
-docker-compose build
+- docker-compose build
 
-docker-compose up
+- docker-compose up
 
 ### Run in development mode without nginx
 
-cd backend
+- cd backend
 
-python3 -m venv venv
+- python3 -m venv venv
 
-On Linux: source venv/bin/activate
-On Windows: venv\Scripts\activate
+- On Linux: source venv/bin/activate
+- On Windows: venv\Scripts\activate
 
-pip install -r requirements.txt
+- pip install -r requirements.txt
 
-python3 manage.py runserver
+- python3 manage.py runserver
 
-cd ..
+- cd ..
 
-cd frontend/ingvild-net
+- cd frontend/ingvild-net
 
-npm start
+- npm start
