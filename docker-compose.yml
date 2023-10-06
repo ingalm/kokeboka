@@ -12,6 +12,8 @@ services:
       context: ./frontend/ingvild-net
     volumes:
       - frontend_build:/frontend/build
+    ports:
+      - "3000:3000"
   nginx:
     image: nginx:latest
     ports:
