@@ -1,6 +1,6 @@
-# Welcome to IngvildNet
+# Welcome to Kokeboka
 
-This is a personal site with apps I have made because I wanted to make them.
+This is a site where I save my recipes in baking and cooking
 
 ## Build
 
