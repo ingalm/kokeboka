@@ -1,7 +1,5 @@
 # Welcome to Kokeboka
 
-This is a site where I save my recipes in baking and cooking
-
 ## Build
 
 This app is built with a React frontend, and Django backend.
