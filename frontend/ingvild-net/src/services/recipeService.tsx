@@ -3,6 +3,7 @@ import api from './api';
 
 export interface Recipe {
     id: number;
+    slug: string;
     recipe_name: string;
     last_edited: string;
     image_url: string;

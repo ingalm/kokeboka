@@ -12,7 +12,7 @@ function RecipeList({recipes}: Props) {
         <div className="RecipeList">
             {recipes.map((currentRecipe) => (
             <RecipeCard key={currentRecipe.id} 
-            id={currentRecipe.id}
+            slug={currentRecipe.slug}
             recipe_name={currentRecipe.recipe_name}
             img_url={currentRecipe.image_url}
             />

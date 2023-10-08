@@ -5,6 +5,8 @@ import RecipeService, { Recipe } from '../services/recipeService';
 import { useParams } from "react-router-dom";
 import NavBar from '../components/NavBar';
 import IngredientList from '../components/IngredientList';
+import StepList from '../components/StepList';
+import ErrorResource from '../components/ErrorResource';
 
 function RecipePage() {
   
@@ -28,12 +30,23 @@ function RecipePage() {
     Update(id);
   });
 
-  return (
-    <div className="App">
-      <NavBar></NavBar>
-      <IngredientList ingredients={recipe?.ingredients}></IngredientList>
-    </div>
-  );
+  if(recipe) {
+		return (
+			<div className="App">
+				<NavBar></NavBar>
+				<IngredientList ingredients={recipe?.ingredients}></IngredientList>
+				<StepList steps={recipe?.steps}></StepList>
+			</div>
+		);
+    }
+    else {
+		return(
+			<div className='App'>
+				<NavBar></NavBar>
+				<ErrorResource></ErrorResource>
+			</div>
+		)
+    }
 }
 
 export default RecipePage;
