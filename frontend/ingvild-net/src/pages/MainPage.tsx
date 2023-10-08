@@ -21,9 +21,9 @@ function MainPage() {
       });
   };
 
-  useEffect(() => {
-    Update();
-  });
+   useEffect(() => {
+     Update();
+   }, []);
 
   return (
     <div className="App">
