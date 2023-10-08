@@ -16,7 +16,8 @@ function IngredientList({ ingredients }: Props){
             {ingredients.map((currentIngredient) => (
                 <IngredientComponent 
                     id={0}
-                    slug={currentIngredient.slug} 
+                    recipe_id={currentIngredient.recipe_id}
+                    slug=''
                     ingredient_name={currentIngredient.ingredient_name} 
                     amount={currentIngredient.amount} 
                     measurement_type={currentIngredient.measurement_type} />
