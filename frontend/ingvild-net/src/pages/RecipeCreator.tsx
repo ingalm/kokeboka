@@ -5,7 +5,7 @@ import Button from '../components/Button';
 import { useState, useEffect } from 'react';
 import NewIngredient from '../components/recipeCreator/NewIngredient';
 import NewStep from '../components/recipeCreator/NewStep';
-import RecipeService, { Recipe, Step, Ingredient } from '../services/recipeService';
+import RecipeService, { Recipe, Step, Ingredient, RecipeData } from '../services/recipeService';
 import { TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
 
@@ -22,10 +22,10 @@ function RecipeCreator() {
 
     const addIngredient = () => {
         console.log("Added ingredient");
-        const newIngredient = {
+        const newIngredient: Ingredient = {
             id: ingredientCounter,
-            recipe_id: 0,
-            slug: "placeholder",
+            recipe_id: "placeholder",
+            slug: "",
             ingredient_name: "",
             amount: 0,
             measurement_type: ""};
@@ -37,10 +37,10 @@ function RecipeCreator() {
 
     const addStep = () => {
         console.log("Added step");
-        const newStep = {
+        const newStep: Step = {
             id: stepCounter,
-            recipe_id: 0,
-            slug: "placeholder",
+            slug: "",
+            recipe_id: "placeholder",
             info: ""
             };
         setSteps((steps) => [...steps, newStep]);
@@ -103,17 +103,25 @@ function RecipeCreator() {
     const publishRecipe = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const recipeData: Recipe = {
-            id: 0,  
+        const recipeData: RecipeData = {
             recipe_name: recipeName, 
             last_edited: new Date().toISOString().split('T')[0],  
-            image_url: imgUrl, 
-            ingredients: ingredients, 
-            steps: steps};
+            image_url: imgUrl
+        };
 
-        console.log(recipeData);
+        // const recipeData: Recipe = {
+        //     id: 0,  
+        //     recipe_name: recipeName, 
+        //     last_edited: new Date().toISOString().split('T')[0],  
+        //     image_url: imgUrl, 
+        //     ingredients: ingredients, 
+        //     steps: steps};
 
-        RecipeService.CreateRecipe(recipeData);
+        //console.log(recipeData);
+
+        RecipeService.CreateRecipe(recipeData, ingredients, steps);
+
+        console.log("Recipe published");
     }
 
     useEffect(() => {
@@ -176,7 +184,6 @@ function RecipeCreator() {
                     id='submitRecipeButton'
                     children={"Publish recipe"}
                 ></Button>
-                
             </form>
         </div>
     );
