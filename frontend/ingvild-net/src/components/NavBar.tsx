@@ -5,10 +5,10 @@ import { Link } from 'react-router-dom';
 function NavBar() {
     return (
         <div className="NavBar">
-            <Link to={"/"}>Home</Link>
-            <Link to={"/search"}>Search</Link>
-            <Link to={"/login"}>Login</Link>
-            <Link to={"/create"}>Creator</Link>
+            <Link className='HeaderLink' to={"/"}>Home</Link>
+            <Link className='HeaderLink' to={"/search"}>Search</Link>
+            <Link className='HeaderLink' to={"/login"}>Login</Link>
+            <Link className='HeaderLink' to={"/create"}>Creator</Link>
         </div>
     );
 }

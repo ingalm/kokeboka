@@ -1,5 +1,6 @@
 import React from 'react';
 import '../App.css';
+import '../css/mainPage.css';
 import { useEffect, useState } from 'react';
 import { Recipe } from '../services/recipeService';
 import RecipeService from '../services/recipeService';

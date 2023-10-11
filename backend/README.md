@@ -1,3 +1,9 @@
+## Running the server
+
+- python3 manage.py runserver
+
+Must be done from this directory
+
 ### How to update backend
 
 - python3 manage.py makemigrations
