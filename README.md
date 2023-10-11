@@ -3,7 +3,7 @@
 ## Build
 
 This app is built with a React frontend, and Django backend.
-The frontend is served through React, and the backend is served through Gunicorn.
+The frontend is served through React, and the backend is served through nginx.
 The application is built with the intention of using a Raspberry Pi as host for the internet.
 The Raspberry Pi will be set up with Jenkins to automatically pull from this repository when an update is pushed, and subsequently to rebuild and run the app with Docker.
 
