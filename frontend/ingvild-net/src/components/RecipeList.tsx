@@ -1,5 +1,7 @@
 import React from 'react';
 import '../App.css';
+import '../css/mainPage.css';
+import '../css/recipeList.css';
 import RecipeCard from './RecipeCard';
 import { Recipe } from '../services/recipeService';
 

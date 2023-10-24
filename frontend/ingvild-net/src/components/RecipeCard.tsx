@@ -1,5 +1,6 @@
 import React from 'react';
 import '../App.css';
+import "../css/mainPage.css";
 import { Link } from 'react-router-dom';
 
 interface RecipeCardInterface {
@@ -14,8 +15,9 @@ function RecipeCard({
     img_url}: RecipeCardInterface) {
     return (
         <div className="RecipeCard">
+
             <Link to={`/recipes/${slug}`}>
-                <img src={img_url} alt=''/>
+                <img src={img_url} alt=""/>
                 <p>{recipe_name}</p>
             </Link>
         </div>

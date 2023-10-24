@@ -1,0 +1,10 @@
+#recipeList {
+    display: inline-block;
+    width: 80%;
+}
+
+#filterDiv {
+    display: inline-block;
+    width: 20%;
+    background-color: aqua;
+}
