@@ -6,6 +6,7 @@ function NavBar() {
     return (
         <div className="NavBar">
             <Link className='HeaderLink' to={"/"}>Home</Link>
+            <Link className='HeaderLink' to={"/recipes"}>Recipes</Link>
             <Link className='HeaderLink' to={"/search"}>Search</Link>
             <Link className='HeaderLink' to={"/login"}>Login</Link>
             <Link className='HeaderLink' to={"/create"}>Creator</Link>

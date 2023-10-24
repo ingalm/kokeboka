@@ -3,9 +3,24 @@
   background-color: antiquewhite;
 }
 
+.NavBar {
+  background-color: #282c34;
+  min-height: 8vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: calc(10px + 2vmin);
+}
+
 .HeaderLink {
-  color: black;
+  color: white;
   text-decoration: none;
+  padding: 20px;
   font-size: 20px;
-  margin: 10px;
+}
+
+.HeaderLink:hover {
+  color: antiquewhite;
+  background-color: #1b1e23;
 }

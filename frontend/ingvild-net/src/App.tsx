@@ -10,6 +10,7 @@ import RecipePage from './pages/RecipePage';
 import SearchPage from './pages/SearchPage';
 import AdminLogin from './pages/AdminLogin';
 import RecipeCreator from './pages/RecipeCreator';
+import AllRecipesPage from './pages/AllRecipesPage';
 
 function App() {
     return (
@@ -18,6 +19,10 @@ function App() {
                 <Route
                 path='/'
                 element={<MainPage/>}
+                />
+                <Route
+                path='/recipes'
+                element={<AllRecipesPage/>}
                 />
                 <Route
                 path='/recipes/:id'
