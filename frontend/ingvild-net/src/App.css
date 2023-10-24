@@ -1,26 +1,33 @@
 .App {
   text-align: center;
-  background-color: antiquewhite;
 }
 
 .NavBar {
-  background-color: #282c34;
+  background-color: antiquewhite;
   min-height: 8vh;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
   font-size: calc(10px + 2vmin);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .HeaderLink {
-  color: white;
+  color: rgb(56, 56, 56);
   text-decoration: none;
   padding: 20px;
   font-size: 20px;
 }
 
 .HeaderLink:hover {
-  color: antiquewhite;
-  background-color: #1b1e23;
+  color: rgb(33, 33, 33);
+  background-color: rgb(220, 202, 177)
+}
+
+.Footer {
+  background-color: antiquewhite;
+  height: 25vh;
 }
