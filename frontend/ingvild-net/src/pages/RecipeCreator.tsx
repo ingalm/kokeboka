@@ -5,15 +5,14 @@ import Button from '../components/Button';
 import { useState, useEffect } from 'react';
 import NewIngredient from '../components/recipeCreator/NewIngredient';
 import NewStep from '../components/recipeCreator/NewStep';
-import RecipeService, { Recipe, Step, Ingredient, RecipeData } from '../services/recipeService';
+import RecipeService from '../services/recipeService';
+import { Ingredient, Recipe, RecipeData, Step } from '../services/types';
 import { TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 function RecipeCreator() {
 
-    const [steps, setSteps] = useState<Step[]>([
-        
-    ]);
+    const [steps, setSteps] = useState<Step[]>([]);
     const [stepCounter, setStepCounter] = useState(1);
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [ingredientCounter, setIngredientCounter] = useState(1);
