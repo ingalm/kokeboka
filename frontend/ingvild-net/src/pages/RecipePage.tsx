@@ -13,22 +13,21 @@ function RecipePage() {
   const { id } = useParams(); //The id of the recipe to be fetched
 
   const [recipe, setRecipe] = useState<Recipe>(); //Recipe information to be shown on page
-  
-  const Update = (id:any) => {
-    if (id) { //If id is not null, get the recipe
-      RecipeService.GetRecipe(id)
-        .then((response) => {
-          setRecipe(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
 
   useEffect(() => {
-    Update(id);
-  });
+    const fetchRecipe = async () => {
+      if (id) {
+        try {
+          const response = await RecipeService.GetRecipe(id);
+          setRecipe(response);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+
+    fetchRecipe(); // Fetch the recipe when the component mounts
+  }, [id]);
 
   if(recipe) {
 		return (

@@ -24,8 +24,19 @@ function RecipeCreator() {
             oven_function: undefined
         }
     );
-    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-    const [steps, setSteps] = useState<Step[]>([]);
+    const [ingredients, setIngredients] = useState<Ingredient[]>([
+        {
+            ingredient_name: "",
+            amount: undefined,
+            measurement_type: undefined
+        }
+    ]);
+    const [steps, setSteps] = useState<Step[]>([
+        {
+            type: 0,
+            info: ""
+        }
+    ]);
 
     useEffect(() => {
         
