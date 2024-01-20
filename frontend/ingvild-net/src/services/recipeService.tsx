@@ -1,41 +1,18 @@
 import { AxiosResponse } from 'axios';
 import api from './api';
-import { Recipe, Ingredient, Step, RecipeData } from './types';
+import { Recipe } from './types';
 
-const CreateRecipe = (recipeData: RecipeData, ingredients: Ingredient[], steps: Step[]): 
-    Promise<{ success: boolean; recipeId: any; } | { success: boolean; error: any; }> => {
-    
-        return api.post('/recipes/create/', recipeData)
+const CreateRecipe = (recipe: Recipe): Promise<{ success: boolean; recipeId: any; } | { success: boolean; slug?:string; error?: any; }> => {
+    return api.post('/recipes/', recipe)
         .then(response => {
-            const recipeId = response.data.slug;
-            console.log("Recipe created with ID:", recipeId);
+            const slug = response.data.slug;
+            console.log("Recipe created with slug:", slug);
+            console.log(response.data);
 
-
-            // Add recipe id to all ingredients and steps
-            for (let i = 0; i < ingredients.length; i++) {
-                ingredients[i].recipe_id = recipeId;
-            }
-
-            for (let i = 0; i < steps.length; i++) {
-                steps[i].recipe_id = recipeId;
-            }
-
-            // Use Promise.all to ensure all ingredients and steps are added before final response
-            const ingredientPromises = ingredients.map(ingredient => 
-                api.post(`/recipes/${recipeId}/add_ingredient/`, ingredient)
-            );
-
-            const stepPromises = steps.map(step => 
-                api.post(`/recipes/${recipeId}/add_step/`, step)
-            );
-
-            return Promise.all([...ingredientPromises, ...stepPromises])
-                .then(() => {
-                    return {
-                        success: true,
-                        recipeId: recipeId
-                    };
-                });
+            return {
+                success: true,
+                slug: slug
+            };
         })
         .catch(error => {
             console.error("Error creating recipe:", error);
@@ -46,8 +23,8 @@ const CreateRecipe = (recipeData: RecipeData, ingredients: Ingredient[], steps: 
         });
 };
 
-const GetRecipe = (id: string): Promise<Recipe>  => {
-    const request = api.get(`/recipes/${id}`);
+const GetRecipe = (slug: string): Promise<Recipe>  => {
+    const request = api.get(`/recipes/${slug}`);
     return request.then((response: AxiosResponse<Recipe>) => response.data);
 };
 
@@ -56,13 +33,13 @@ const GetRecipes = (): Promise<Recipe[]> => {
     return request.then((response: AxiosResponse<Recipe[]>) => response.data);
 };
 
-const DeleteRecipe = (id: string): Promise<void> => {
-    const request = api.delete(`/recipes/${id}`);
+const DeleteRecipe = (slug: string): Promise<void> => {
+    const request = api.delete(`/recipes/${slug}`);
     return request.then((response: AxiosResponse<void>) => response.data);
 }
 
-const UpdateRecipe = (id: string, recipeData: Recipe): Promise<void> => {
-    const request = api.put(`/recipes/${id}`, recipeData);
+const UpdateRecipe = (slug: string, recipe: Recipe): Promise<void> => {
+    const request = api.put(`/recipes/${slug}`, recipe);
     return request.then((response: AxiosResponse<void>) => response.data);
 }
 

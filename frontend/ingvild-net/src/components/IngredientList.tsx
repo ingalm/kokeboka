@@ -1,7 +1,7 @@
 import React from 'react';
 import '../App.css';
 import IngredientComponent from './IngredientComponent';
-import { Ingredient } from '../services/recipeService';
+import { Ingredient } from '../services/types';
 import ErrorResource from './ErrorResource';
 
 
@@ -13,11 +13,9 @@ function IngredientList({ ingredients }: Props){
     if(ingredients) {
         return (
             <div className='IngredientList'>
-            {ingredients.map((currentIngredient) => (
+            {ingredients.map((currentIngredient, index) => (
                 <IngredientComponent 
-                    id={0}
-                    recipe_id={currentIngredient.recipe_id}
-                    slug=''
+                    key={index}
                     ingredient_name={currentIngredient.ingredient_name} 
                     amount={currentIngredient.amount} 
                     measurement_type={currentIngredient.measurement_type} />

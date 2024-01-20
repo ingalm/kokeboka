@@ -1,31 +1,26 @@
 export interface Recipe {
-    id: number;
     slug: string;
     recipe_name: string;
     last_edited: string;
-    image_url: string;
-    ingredients: Ingredient[];
-    steps: Step[];
-}
-
-export interface RecipeData {
-    recipe_name: string;
-    last_edited: string;
-    image_url: string;
+    img_url: string;
+    ingredient_list: Ingredient[];
+    step_list: Step[];
+    est_time?: { hours?: number; minutes?: number }; // Optional
+    oven_function?: OvenFunction; // Optional
 }
 
 export interface Ingredient {
-    id: number;
-    recipe_id: string;
     ingredient_name: string;
-    amount: number;
-    slug: string;
-    measurement_type: string;
+    amount?: number; // Optional
+    measurement_type?: string; // Optional
 }
 
 export interface Step {
-    id: number
-    recipe_id: string;
-    slug: string;
+    type: number;
     info: string;
+}
+
+export interface OvenFunction {
+    degrees?: number;  // Optional
+    function_name?: string;  // Optional
 }

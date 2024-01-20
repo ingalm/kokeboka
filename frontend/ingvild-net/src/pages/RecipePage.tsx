@@ -1,7 +1,7 @@
-import React from 'react';
 import '../App.css';
 import { useState, useEffect } from 'react';
-import RecipeService, { Recipe } from '../services/recipeService';
+import RecipeService from '../services/recipeService';
+import { Recipe } from '../services/types';
 import { useParams } from "react-router-dom";
 import NavBar from '../components/NavBar';
 import IngredientList from '../components/IngredientList';
@@ -34,8 +34,8 @@ function RecipePage() {
 		return (
 			<div className="App">
 				<NavBar></NavBar>
-				<IngredientList ingredients={recipe?.ingredients}></IngredientList>
-				<StepList steps={recipe?.steps}></StepList>
+				<IngredientList ingredients={recipe?.ingredient_list}></IngredientList>
+				<StepList steps={recipe?.step_list}></StepList>
 			</div>
 		);
     }

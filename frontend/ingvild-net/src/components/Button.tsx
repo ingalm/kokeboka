@@ -12,20 +12,18 @@ interface Props {
 function Button({ 
     type,
     children,
-	classnames,
-	id,
+	  classnames,
+	  id,
     onClick
   }: Props) {
 
 	const combinedClassNames = `Button ${classnames || ''}`.trim();
 
-	console.log(combinedClassNames);
-
     if (type === "submit") {
         return (
-			<button id={id} className={combinedClassNames} type={type}>
-				{children}
-			</button>
+        <button id={id} className={combinedClassNames} type={type}>
+          {children}
+        </button>
         )
     }
     else {

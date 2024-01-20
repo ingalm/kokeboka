@@ -1,6 +1,6 @@
 import React from 'react';
 import '../App.css';
-import { Ingredient } from '../services/recipeService';
+import { Ingredient } from '../services/types';
 
 function IngredientComponent({
     ingredient_name, 

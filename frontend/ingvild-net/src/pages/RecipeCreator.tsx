@@ -3,129 +3,168 @@ import '../App.css';
 import "../css/recipeCreator.css"
 import Button from '../components/Button';
 import { useState, useEffect } from 'react';
-import NewIngredient from '../components/recipeCreator/NewIngredient';
-import NewStep from '../components/recipeCreator/NewStep';
+import IngredientField from '../components/recipeCreator/IngredientField';
+import StepField from '../components/recipeCreator/StepField';
 import RecipeService from '../services/recipeService';
-import { Ingredient, Recipe, RecipeData, Step } from '../services/types';
+import { Ingredient, Recipe, Step } from '../services/types';
 import { TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 function RecipeCreator() {
 
-    const [steps, setSteps] = useState<Step[]>([]);
-    const [stepCounter, setStepCounter] = useState(1);
+    const [recipe, setRecipe] = useState<Recipe>(
+        {
+            slug: "",
+            recipe_name: "",
+            last_edited: "",
+            img_url: "",
+            ingredient_list: [],
+            step_list: [],
+            est_time: undefined,
+            oven_function: undefined
+        }
+    );
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
-    const [ingredientCounter, setIngredientCounter] = useState(1);
-    const [imgUrl, setImgUrl] = useState("");
-    const [recipeName, setRecipeName] = useState("");
+    const [steps, setSteps] = useState<Step[]>([]);
 
+    useEffect(() => {
+        
+      }, [recipe, ingredients, steps]);
+
+    // Adds an IngredientField
     const addIngredient = () => {
         console.log("Added ingredient");
-        const newIngredient: Ingredient = {
-            id: ingredientCounter,
-            recipe_id: "placeholder",
-            slug: "",
+
+        // Create a new ingredient object with default values
+        const newIngredient = {
             ingredient_name: "",
-            amount: 0,
-            measurement_type: ""};
-        setIngredients((ingredients) => [...ingredients, newIngredient]);
-        setIngredientCounter((ingredientCounter) => ingredientCounter + 1);
+            amount: undefined,
+            measurement_type: undefined
+        };
+
+        // Update the ingredients state with the new ingredient
+        setIngredients(prevIngredients => [...prevIngredients, newIngredient]);
     }
 
-    
-
+    // Adds a StepField
     const addStep = () => {
         console.log("Added step");
-        const newStep: Step = {
-            id: stepCounter,
-            slug: "",
-            recipe_id: "placeholder",
+
+        // Create a new ingredient object with default values
+        const newStep = {
+            type: 0,
             info: ""
-            };
-        setSteps((steps) => [...steps, newStep]);
-        setStepCounter((stepCounter) => stepCounter + 1);
+        };
+
+        // Update the ingredients state with the new ingredient
+        setSteps(prevSteps => [...prevSteps, newStep]);
     }
 
-    
+    // Removes an IngredientField
+    const removeIngredient = (index: number) => {
+        console.log("Removed ingredient at index", index);
 
-    //Add the three first empty ingredients and steps
-    useEffect(() => {
-        for (let i = 0; i < 1; i++) {
-            addIngredient();
-            addStep();
-        }
-    }, []);
+        // Create a copy of the current ingredients list
+        const updatedIngredients = [...ingredients];
 
-    const removeIngredient = (id: number) => {
-        setIngredients((ingredients) => ingredients.filter((component) => component.id !== id));
+        // Remove the ingredient at the specified index
+        updatedIngredients.splice(index, 1);
+
+        // Update the ingredients state with the modified list
+        setIngredients(updatedIngredients);
     };
 
-    const removeStep = (id: number) => {
-        setSteps((steps) => steps.filter((component) => component.id !== id));
+    // Removes a StepField
+    const removeStep = (index: number) => {
+        console.log("Removed step at index", index);
+
+        // Create a copy of the current steps list
+        const updatedSteps = [...steps];
+
+        // Remove the steps at the specified index
+        updatedSteps.splice(index, 1);
+
+        // Update the steps state with the modified list
+        setSteps(updatedSteps);
     };
 
-    const changeIngredient = (id: number, newName: string, newAmount: number, newMeasurementType: string) => {
-        setIngredients((ingredients) =>
-            ingredients.map((currentIngredient) => {
-                if (currentIngredient.id === id) {
-                    // Return a new object with updated name
-                    return { ...currentIngredient,  ingredient_name: newName, amount: newAmount, measurement_type: newMeasurementType };
+    // Changes the values of an ingredient in the ingredient list
+    const changeIngredient = (index: number, field: string, value: string | number) => {
+        setIngredients((prevIngredients) => {
+            return prevIngredients.map((ingredient, i) => {
+                if (i === index) {
+                    return {
+                        ...ingredient,
+                        [field]: value,
+                    };
                 }
-                // No update needed for other items
-                return currentIngredient;
-            })
-        );
+                return ingredient;
+            });
+        });
     }
 
-    const changeStep = (id: number, newInfo: string) => {
-        setSteps((steps) =>
-            steps.map((currentStep) => {
-                if (currentStep.id === id) {
-                    // Return a new object with updated name
-                    return { ...currentStep,  info: newInfo };
+    // Changes the values of a step in the step list
+    const changeStep = (index: number, field: string, value: string | number) => {
+        setSteps((prevSteps) => {
+            return prevSteps.map((step, i) => {
+                if (i === index) {
+                    return {
+                        ...step,
+                        [field]: value,
+                    };
                 }
-                // No update needed for other items
-                return currentStep;
-            })
-        );
+                return step;
+            });
+        });
     }
 
+    // Changes all non-list fields of the recipe based on field variable
     const changeRecipe = (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
-        if(field === "recipeName") {
-            setRecipeName(event.target.value);
-        } 
-        else if (field === "imgUrl") {
-            setImgUrl(event.target.value);
-        }
-    }
+        setRecipe((prevRecipe) => {
+            if(field === "hours" || field === "minutes") { // If the field is hours or minutes, update the est_time object
+                return {
+                    ...prevRecipe,
+                    est_time: {
+                        ...prevRecipe.est_time,
+                        [field]: event.target.value,
+                    }
+                };
+            }
+            else if(field === "degrees" || field === "function_name") { // If the field is degrees or function_name, update the oven_function object
+                return {
+                    ...prevRecipe,
+                    oven_function: {
+                        ...prevRecipe.oven_function,
+                        [field]: event.target.value,
+                    }
+                };
+            }
+            return { // Otherwise, update the main recipe object
+                ...prevRecipe,
+                [field]: event.target.value,
+            };
+        });
+    };
 
+    // Pushes the recipe to the database
     const publishRecipe = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const recipeData: RecipeData = {
-            recipe_name: recipeName, 
-            last_edited: new Date().toISOString().split('T')[0],  
-            image_url: imgUrl
+        const currentDate = new Date().toISOString().split('T')[0];
+    
+        console.log("Publishing recipe (before):", recipe);
+        // Update the recipe with the latest ingredient and step lists
+        const updatedRecipe = {
+            ...recipe,
+            ingredient_list: ingredients,
+            step_list: steps,
+            last_edited: currentDate,
         };
 
-        // const recipeData: Recipe = {
-        //     id: 0,  
-        //     recipe_name: recipeName, 
-        //     last_edited: new Date().toISOString().split('T')[0],  
-        //     image_url: imgUrl, 
-        //     ingredients: ingredients, 
-        //     steps: steps};
+        console.log("Publishing recipe:", updatedRecipe);
 
-        //console.log(recipeData);
-
-        RecipeService.CreateRecipe(recipeData, ingredients, steps);
-
-        console.log("Recipe published");
+        RecipeService.CreateRecipe(updatedRecipe);
     }
-
-    useEffect(() => {
-        //Oppdater oppskriften som skal publiseres
-      }, [ingredients, recipeName, imgUrl, steps]);
 
     return (
         <div className="App">
@@ -133,21 +172,29 @@ function RecipeCreator() {
             <h3>Oppskriftlager</h3>
             <form action="submit" onSubmit={publishRecipe}>
                 <div id='mainInfoDiv'>
-                    <TextField label='Recipe name' onChange={changeRecipe("recipeName")} variant='outlined'></TextField>
-                    <TextField label='Image Url' onChange={changeRecipe("imgUrl")} variant='outlined'></TextField>
+                    <TextField label='Recipe name' onChange={changeRecipe("recipe_name")} variant='outlined' required></TextField>
+                    <TextField label='Image Url' onChange={changeRecipe("img_url")} variant='outlined' required></TextField>
+                </div>
+                <div>
+                    <TextField label='Estimated hours' onChange={changeRecipe("hours")} type='number'></TextField>
+                    <TextField label='Estimated minutes' onChange={changeRecipe("minutes")} type='number'></TextField>
+                </div>
+                <div>
+                    <TextField label='Degrees' onChange={changeRecipe("degrees")} type='number'></TextField>
+                    <TextField label='Oven function' onChange={changeRecipe("function_name")}></TextField>
                 </div>
                 <div id='ingredientsAndStepsContainer'>
                     <div id='ingredientDiv'>
                         <div id='ingredientList'>
-                            {ingredients.map((currentIngredient) => (
-                                <NewIngredient 
-                                    key={currentIngredient.id}
-                                    id={currentIngredient.id}
+                            {ingredients.map((currentIngredient, index) => (
+                                <IngredientField 
+                                    key={index}
+                                    index={index}
                                     ingredientName={currentIngredient.ingredient_name}
                                     amount={currentIngredient.amount}
                                     measurementType={currentIngredient.measurement_type}
-                                    onRemove={removeIngredient}
-                                    onChange={changeIngredient}
+                                    onRemove = {() => removeIngredient(index)}
+                                    onChange = {changeIngredient}
                                 />
                             ))}
                         </div>
@@ -160,13 +207,14 @@ function RecipeCreator() {
                     </div>
                     <div id='stepDiv'>
                         <div id='stepList'>
-                            {steps.map((currentStep) => (
-                                <NewStep
-                                key={currentStep.id}
-                                id={currentStep.id}
+                            {steps.map((currentStep, index) => (
+                                <StepField
+                                key={index}
+                                index={index}
+                                type={currentStep.type}
                                 info={currentStep.info}
-                                onRemove={removeStep}
-                                onChange={changeStep}
+                                onRemove = {() => removeStep(index)}
+                                onChange = {changeStep}
                             />
                             ))}
                         </div>

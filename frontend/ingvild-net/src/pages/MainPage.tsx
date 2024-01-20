@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import '../App.css';
 import '../css/mainPage.css';
 import { useEffect, useState } from 'react';
-import { Recipe } from '../services/recipeService';
+import { Recipe } from '../services/types';
 import RecipeService from '../services/recipeService';
 import NavBar from '../components/NavBar';
 import RecipeList from '../components/RecipeList';

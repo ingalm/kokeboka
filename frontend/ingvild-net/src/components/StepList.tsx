@@ -1,7 +1,7 @@
 import React from 'react';
 import '../App.css';
 import StepComponent from './StepComponent';
-import { Step } from '../services/recipeService';
+import { Step } from '../services/types';
 import ErrorResource from './ErrorResource';
 
 
@@ -13,11 +13,10 @@ function StepList({ steps }: Props){
     if(steps) {
         return (
             <div className='StepList'>
-            {steps.map((currentStep) => (
+            {steps.map((currentStep, index) => (
                 <StepComponent 
-                    id={0}
-                    recipe_id={currentStep.recipe_id}
-                    slug={currentStep.slug}
+                    key={index}
+                    type={currentStep.type}
                     info={currentStep.info}/>
             ))}
             </div>
