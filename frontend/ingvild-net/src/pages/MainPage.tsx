@@ -7,6 +7,7 @@ import RecipeService from '../services/recipeService';
 import NavBar from '../components/NavBar';
 import RecipeList from '../components/RecipeList';
 import Footer from '../components/Footer';
+import { colors } from '@mui/material';
 
 function MainPage() {
 
@@ -18,7 +19,6 @@ function MainPage() {
 		RecipeService.GetRecipes()
 		.then((response) => {
 			setRecipes(response);
-			console.log(recipes);
 		})
 		.catch((error) => {
 			console.log(error);
@@ -27,6 +27,10 @@ function MainPage() {
 
 	useEffect(() => {
 		Update();
+
+		console.log(recipes);
+		setRecentRecipes(recipes.slice(0, 7)); //Show the three most recent recipes
+		setRecipeTips(recipes.slice(3, 6)); //Show three random recipes, skal fikses så dette faktisk gjelder senere
 	}, []);
 
 	//Parallax effect for background

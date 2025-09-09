@@ -1,10 +1,30 @@
+#allRecipesContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
 #recipeList {
-    display: inline-block;
-    width: 80%;
+    width: 85%;
 }
 
 #filterDiv {
     display: inline-block;
-    width: 20%;
+    width: 15%;
     background-color: aqua;
+}
+
+.RecipeList {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 2%;
+    margin: 0px 50px;
+}
+
+.RecipeCard {
+    height: 250px;
+    flex-basis: calc(25% - 1.5%); /* 25% width for 4 cards per row, considering the gap */
+    margin-top: 40px;
+    border-radius: 20px;
 }

@@ -6,9 +6,10 @@ import { useState, useEffect } from 'react';
 import IngredientField from '../components/recipeCreator/IngredientField';
 import StepField from '../components/recipeCreator/StepField';
 import RecipeService from '../services/recipeService';
-import { Ingredient, Recipe, Step } from '../services/types';
+import { Ingredient, Recipe, Step, timeEstimations, ovenFunctionNames } from '../services/types';
 import { TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
+import DropDown from '../components/DropDown';
 
 function RecipeCreator() {
 
@@ -24,19 +25,8 @@ function RecipeCreator() {
             oven_function: undefined
         }
     );
-    const [ingredients, setIngredients] = useState<Ingredient[]>([
-        {
-            ingredient_name: "",
-            amount: undefined,
-            measurement_type: undefined
-        }
-    ]);
-    const [steps, setSteps] = useState<Step[]>([
-        {
-            type: 0,
-            info: ""
-        }
-    ]);
+    const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+    const [steps, setSteps] = useState<Step[]>([]);
 
     useEffect(() => {
         
@@ -130,18 +120,13 @@ function RecipeCreator() {
     }
 
     // Changes all non-list fields of the recipe based on field variable
-    const changeRecipe = (field: string) => (event: ChangeEvent<HTMLInputElement>) => {
+    const changeRecipe = (field: string, value?: string | number) => (event: ChangeEvent<HTMLInputElement>) => {
+        console.log("Changing recipe:", field, event.target.value);
         setRecipe((prevRecipe) => {
-            if(field === "hours" || field === "minutes") { // If the field is hours or minutes, update the est_time object
-                return {
-                    ...prevRecipe,
-                    est_time: {
-                        ...prevRecipe.est_time,
-                        [field]: event.target.value,
-                    }
-                };
-            }
-            else if(field === "degrees" || field === "function_name") { // If the field is degrees or function_name, update the oven_function object
+            if(!value) value = event.target.value; // If value is not specified, use the event target value
+
+            console.log(value);
+            if(field === "degrees" || field === "function_name") { // If the field is degrees or function_name, update the oven_function object
                 return {
                     ...prevRecipe,
                     oven_function: {
@@ -152,9 +137,10 @@ function RecipeCreator() {
             }
             return { // Otherwise, update the main recipe object
                 ...prevRecipe,
-                [field]: event.target.value,
+                [field]: value,
             };
         });
+        console.log("Recipe:", recipe);
     };
 
     // Pushes the recipe to the database
@@ -175,7 +161,58 @@ function RecipeCreator() {
         console.log("Publishing recipe:", updatedRecipe);
 
         RecipeService.CreateRecipe(updatedRecipe);
-    }
+    };
+
+    const handleDropdownChange = (field: string, value: string) => {
+        if(field === "est_time") {
+            setRecipe((prevRecipe) => ({
+                ...prevRecipe,
+                [field]: value,
+            }));
+        }
+        else if(field === "oven_function") {
+            setRecipe((prevRecipe) => {
+                return {
+                    ...prevRecipe,
+                    oven_function: {
+                        ...prevRecipe.oven_function,
+                        [field]: value,
+                    }
+                };
+            });
+        }
+        else { //Error handling
+            console.log("Invalid field:", field);
+        }
+
+        console.log("Recipe:", recipe);
+    };
+
+    // State to hold the style
+    const [isOvenFunctionActive, setOvenFunctionActive] = useState(false);
+
+    // Dynamic style based on isActive
+    const ovenFunctionStyle: React.CSSProperties = {
+        display: isOvenFunctionActive ? 'inline-block' : 'none',
+
+      };
+    // Dynamic button text based on isActive
+    const ovenFunctionButtonChild = isOvenFunctionActive ? "Remove oven function" : "Add oven function";
+
+    const handleOvenFunctionButton = () => {
+
+        setOvenFunctionActive(!isOvenFunctionActive);
+
+        setRecipe((prevRecipe) => {
+            return {
+                ...prevRecipe,
+                oven_function: {
+                    function_name: "0",
+                    degrees: undefined,
+                }
+            };
+        });
+    };
 
     return (
         <div className="App">
@@ -187,13 +224,27 @@ function RecipeCreator() {
                     <TextField label='Image Url' onChange={changeRecipe("img_url")} variant='outlined' required></TextField>
                 </div>
                 <div>
-                    <TextField label='Estimated hours' onChange={changeRecipe("hours")} type='number'></TextField>
-                    <TextField label='Estimated minutes' onChange={changeRecipe("minutes")} type='number'></TextField>
+                    <label htmlFor="">Estimated time: </label>
+                    <DropDown 
+                    field={'est_time'} 
+                    options={timeEstimations} 
+                    onChange={handleDropdownChange}
+                    ></DropDown>
                 </div>
-                <div>
+                <div style={ovenFunctionStyle}>
                     <TextField label='Degrees' onChange={changeRecipe("degrees")} type='number'></TextField>
-                    <TextField label='Oven function' onChange={changeRecipe("function_name")}></TextField>
+                    <DropDown 
+                    field={'oven_function'} 
+                    options={ovenFunctionNames} 
+                    onChange={handleDropdownChange}
+                    ></DropDown>
                 </div>
+                <Button
+                    classnames='addingButton'
+                    type='button'
+                    children={ovenFunctionButtonChild}
+                    onClick={handleOvenFunctionButton}
+                ></Button>
                 <div id='ingredientsAndStepsContainer'>
                     <div id='ingredientDiv'>
                         <div id='ingredientList'>

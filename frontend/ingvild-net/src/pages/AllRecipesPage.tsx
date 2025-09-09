@@ -10,35 +10,36 @@ import Footer from '../components/Footer';
 
 function AllRecipesPage() {
 
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  
-  const Update = () => {
-    RecipeService.GetRecipes()
-      .then((response) => {
-        setRecipes(response);
-        console.log(recipes);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+	const [recipes, setRecipes] = useState<Recipe[]>([]);
+	
+	const fetchRecipes = () => {
+		RecipeService.GetRecipes()
+		.then((response) => {
+			setRecipes(response);
+		})
+		.catch((error) => {
+			console.log(error);
+		});
+	};
 
-   useEffect(() => {
-     Update();
-   }, []);
+	useEffect(() => {
+		fetchRecipes();
+	}, []);
 
-  return (
-    <div className="App">
-      <NavBar></NavBar>
-      <div id='filterDiv'>
-        <p>Filtrering</p>
-      </div>
-      <div id='recipeList'>
-        <RecipeList recipes={recipes}></RecipeList>
-      </div>
-      <Footer></Footer>
-    </div>
-  );
+	return (
+		<div className="App">
+			<NavBar></NavBar>
+			<div id='allRecipesContainer'>
+				<div id='filterDiv'>
+					<p>Filtrering</p>
+				</div>
+				<div id='recipeList'>
+					<RecipeList recipes={recipes}></RecipeList>
+				</div>
+			</div>
+			<Footer></Footer>
+		</div>
+	);
 }
 
 export default AllRecipesPage;

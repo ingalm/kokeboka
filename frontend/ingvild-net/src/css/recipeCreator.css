@@ -30,6 +30,13 @@ h1 {
     align-self: stretch;
 }
 
+#stepTypeDropdown {
+    height: 30px;
+    border: none;
+    border-radius: 5px;
+    background-color: whitesmoke;
+}
+
 /*Buttons*/
 .Button {
     text-align: center;
@@ -63,5 +70,8 @@ h1 {
     cursor: pointer;
 }
 
+#ovenFunctionButton {
+    display: inline-block;
+}
 
 

@@ -11,9 +11,10 @@ import ErrorResource from '../components/ErrorResource';
 function RecipePage() {
   
   const { id } = useParams(); //The id of the recipe to be fetched
+  console.log(id);
 
   const [recipe, setRecipe] = useState<Recipe>(); //Recipe information to be shown on page
-
+  
   useEffect(() => {
     const fetchRecipe = async () => {
       if (id) {
@@ -28,7 +29,7 @@ function RecipePage() {
 
     fetchRecipe(); // Fetch the recipe when the component mounts
   }, [id]);
-
+  
   if(recipe) {
 		return (
 			<div className="App">
