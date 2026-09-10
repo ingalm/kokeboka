@@ -1,4 +1,5 @@
 import { and, asc, desc, eq, ilike, inArray, isNotNull, sql } from "drizzle-orm";
+import type { BatchItem } from "drizzle-orm/batch";
 
 import { getDb } from "@/db/client";
 import {
@@ -196,22 +197,24 @@ function validatePublishedRecipe(input: EditableRecipe) {
   }
 }
 
-async function replaceRecipeContent(db: any, recipeId: string, input: EditableRecipe) {
-  await db.delete(ingredientSections).where(eq(ingredientSections.recipeId, recipeId));
-  await db.delete(instructions).where(eq(instructions.recipeId, recipeId));
-  await db.delete(recipeTags).where(eq(recipeTags.recipeId, recipeId));
+function recipeContentQueries(db: NonNullable<ReturnType<typeof getDb>>, recipeId: string, input: EditableRecipe) {
+  const queries: BatchItem<"pg">[] = [
+    db.delete(ingredientSections).where(eq(ingredientSections.recipeId, recipeId)),
+    db.delete(instructions).where(eq(instructions.recipeId, recipeId)),
+    db.delete(recipeTags).where(eq(recipeTags.recipeId, recipeId)),
+  ];
 
   for (const [sectionIndex, section] of input.ingredientSections.entries()) {
     const sectionId = crypto.randomUUID();
-    await db.insert(ingredientSections).values({
+    queries.push(db.insert(ingredientSections).values({
       id: sectionId,
       recipeId,
       title: section.title.trim() || "Ingredienser",
       position: sectionIndex,
-    });
+    }));
     const cleanIngredients = section.ingredients.filter((ingredient) => ingredient.name.trim());
     if (cleanIngredients.length) {
-      await db.insert(ingredients).values(
+      queries.push(db.insert(ingredients).values(
         cleanIngredients.map((ingredient, position) => ({
           id: crypto.randomUUID(),
           sectionId,
@@ -221,13 +224,13 @@ async function replaceRecipeContent(db: any, recipeId: string, input: EditableRe
           note: ingredient.note.trim(),
           position,
         })),
-      );
+      ));
     }
   }
 
   const cleanInstructions = input.instructions.filter((instruction) => instruction.content.trim());
   if (cleanInstructions.length) {
-    await db.insert(instructions).values(
+    queries.push(db.insert(instructions).values(
       cleanInstructions.map((instruction, position) => ({
         id: crypto.randomUUID(),
         recipeId,
@@ -235,10 +238,11 @@ async function replaceRecipeContent(db: any, recipeId: string, input: EditableRe
         content: instruction.content.trim(),
         position,
       })),
-    );
+    ));
   }
   const uniqueTagIds = [...new Set(input.tagIds)];
-  if (uniqueTagIds.length) await db.insert(recipeTags).values(uniqueTagIds.map((tagId) => ({ recipeId, tagId })));
+  if (uniqueTagIds.length) queries.push(db.insert(recipeTags).values(uniqueTagIds.map((tagId) => ({ recipeId, tagId }))));
+  return queries;
 }
 
 export async function saveRecipe(input: EditableRecipe, options?: { republish?: boolean }) {
@@ -265,11 +269,13 @@ export async function saveRecipe(input: EditableRecipe, options?: { republish?: 
       ? now
       : existing.publishedAt ?? now;
 
-  const result = await db.transaction(async (tx) => {
-    let id = input.id;
-    if (!id) {
-      id = crypto.randomUUID();
-      await tx.insert(recipes).values({
+  const id = input.id ?? crypto.randomUUID();
+  const recipeQuery = input.id
+    ? db
+        .update(recipes)
+        .set({ ...data, coverImageKey: input.coverImageKey, status: input.status, publishedAt, updatedAt: now })
+        .where(eq(recipes.id, id))
+    : db.insert(recipes).values({
         id,
         ...data,
         coverImageKey: input.coverImageKey,
@@ -277,16 +283,9 @@ export async function saveRecipe(input: EditableRecipe, options?: { republish?: 
         publishedAt,
         updatedAt: now,
       });
-    } else {
-      await tx
-        .update(recipes)
-        .set({ ...data, coverImageKey: input.coverImageKey, status: input.status, publishedAt, updatedAt: now })
-        .where(eq(recipes.id, id));
-    }
-    await replaceRecipeContent(tx, id, input);
-    return id;
-  });
-  return result;
+  const queries = [recipeQuery, ...recipeContentQueries(db, id, input)] as [BatchItem<"pg">, ...BatchItem<"pg">[]];
+  await db.batch(queries);
+  return id;
 }
 
 export async function getRecipeCoverImageKey(id: string) {
